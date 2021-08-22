@@ -1,0 +1,34 @@
+version: "3.1" 
+services:
+  api:
+    container_name: nestjs_graphql_mongodb_api
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    volumes: 
+      - .:/home/api
+      - /home/api/node_modules
+
+  mongo:
+    container_name: nestjs_graphql_mongodb
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME_ADMIN}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD_ADMIN}
+      MONGO_INITDB_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_PASSWORD: ${DATABASE_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DATABASE_NAME} 
+
+  mongo-express:
+    container_name: nestjs_graphql_mongodb_express
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_USERNAME_ADMIN}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASSWORD_ADMIN}
+      ME_CONFIG_BASICAUTH_USERNAME: ${DATABASE_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DATABASE_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${DATABASE_USERNAME_ADMIN}:${DATABASE_PASSWORD_ADMIN}@mongo:27017/
